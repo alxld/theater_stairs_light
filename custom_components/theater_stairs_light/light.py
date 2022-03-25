@@ -52,6 +52,7 @@ light_entity = "light.theater_stairs_group"
 harmony_entity = "remote.theater_harmony_hub"
 # switch_action = "zigbee2mqtt/Theater Switch/action"
 motion_sensor_action = "zigbee2mqtt/Theater Stairs Motion Sensor"
+motion_sensor_action2 = "zigbee2mqtt/Mudroom High Motion Sensor"
 dartboard_entity = "light.dart_board"
 brightness_step = 43
 motion_sensor_brightness = 128
@@ -85,6 +86,13 @@ async def async_setup_platform(
         """A new motion sensor MQTT message has been received"""
         await ent.motion_sensor_message_received(topic, json.loads(payload), qos)
 
+    @callback
+    async def motion_sensor_message_received2(
+        topic: str, payload: str, qos: int
+    ) -> None:
+        """A new motion sensor MQTT message has been received"""
+        await ent.motion_sensor_message_received2(topic, json.loads(payload), qos)
+
     if has_switch:
         await hass.components.mqtt.async_subscribe(
             switch_action, switch_message_received
@@ -92,6 +100,9 @@ async def async_setup_platform(
     if has_motion_sensor:
         await hass.components.mqtt.async_subscribe(
             motion_sensor_action, motion_sensor_message_received
+        )
+        await hass.components.mqtt.async_subscribe(
+            motion_sensor_action2, motion_sensor_message_received2
         )
 
 
@@ -114,6 +125,7 @@ class TheaterStairsLight(LightEntity):
         self._is_on = False
         self._available = True
         self._occupancy = False
+        self._occupancy2 = False
         self.entity_id = generate_entity_id(ENTITY_ID_FORMAT, self._name, [])
         self._white_value: Optional[int] = None
         self._effect_list: Optional[List[str]] = None
@@ -405,4 +417,31 @@ class TheaterStairsLight(LightEntity):
                 brightness=motion_sensor_brightness, source="MotionSensor"
             )
         else:
-            await self.async_turn_off()
+            if not self._occupancy2:
+                await self.async_turn_off()
+
+    async def motion_sensor_message_received2(
+        self, topic: str, payload: str, qos: int
+    ) -> None:
+        """A new MQTT message has been received."""
+        if self._occupancy2 == payload["occupancy"]:
+            # No change to state
+            return
+
+        self._occupancy2 = payload["occupancy"]
+
+        # Disable motion sensor tracking if the lights are switched on or the harmony is on
+        if has_harmony:
+            if self.switched_on or self.harmony_on or self.dartboard_on:
+                return
+        else:
+            if self.switched_on:
+                return
+
+        if self._occupancy2:
+            await self.async_turn_on(
+                brightness=motion_sensor_brightness, source="MotionSensor"
+            )
+        else:
+            if not self._occupancy:
+                await self.async_turn_off()
