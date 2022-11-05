@@ -1,6 +1,6 @@
 """Platform for light integration"""
 from __future__ import annotations
-import logging, json
+import logging, json, sys
 
 # from enum import Enum
 # import homeassistant.helpers.config_validation as cv
@@ -44,7 +44,9 @@ from homeassistant.const import (
     STATE_ON,
     STATE_UNAVAILABLE,
 )
-from .right_light import RightLight
+
+sys.path.append("custom_components/right_light")
+from right_light import RightLight
 
 from . import DOMAIN
 
