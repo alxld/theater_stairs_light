@@ -36,13 +36,14 @@ async def async_setup_platform(
     ent = TheaterStairsLight()
     add_entities([ent])
 
+
 class TheaterStairsLight(NewLight):
     """Theater Stairs Light."""
 
     def __init__(self) -> None:
         """Initialize Theater Stairs Light."""
         super(TheaterStairsLight, self).__init__(
-            "Theater Stairs Light", domain=DOMAIN, debug=False, debug_rl=False
+            "Theater Stairs", domain=DOMAIN, debug=False, debug_rl=False
         )
 
         self.motion_sensor_brightness = 128
