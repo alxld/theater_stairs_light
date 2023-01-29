@@ -39,4 +39,4 @@ class TheaterStairsLight(NewLight):
         self.motion_sensors.append("Theater Stairs Motion Sensor")
         self.motion_sensors.append("Mudroom High Motion Sensor")
         self.motion_disable_entities.append("remote.theater_harmony_hub")
-        self.motion_disable_entities.append("light.dart_board")
+        self.motion_disable_entities.append("light.theater_dart_board")
