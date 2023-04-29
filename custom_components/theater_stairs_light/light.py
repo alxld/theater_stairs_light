@@ -36,13 +36,13 @@ class TheaterStairsLight(NewLight):
 
         self.motion_sensor_brightness = 128
         self.entities["light.theater_stairs_group"] = None
-        # self.motion_sensors.append("Theater Stairs Motion Sensor")
-        # self.motion_sensors.append("Mudroom High Motion Sensor")
-        self.motion_sensors.append(
-            "binary_sensor.theater_stairs_motion_sensor_occupancy_4"
-        )
-        self.motion_sensors.append(
-            "binary_sensor.mudroom_high_motion_sensor_occupancy_3"
-        )
+        self.motion_sensors.append("Theater Stairs Motion Sensor")
+        self.motion_sensors.append("Mudroom High Motion Sensor")
+        # self.motion_sensors.append(
+        #    "binary_sensor.theater_stairs_motion_sensor_occupancy_4"
+        # )
+        # self.motion_sensors.append(
+        #    "binary_sensor.mudroom_high_motion_sensor_occupancy_3"
+        # )
         self.motion_disable_entities.append("remote.theater_harmony_hub")
         self.motion_disable_entities.append("light.theater_dart_board")
